@@ -8,6 +8,8 @@ from .agents import (
     WeatherAnalysis,
     create_recommendation_agent,
     TripPlan,
+    create_activity_search_agent,
+    SearchResult,
 )
 
 
@@ -16,6 +18,7 @@ class AdventureManager:
 
     def __init__(self):
         self.recommendation_agent: Agent[TripContext] = create_recommendation_agent()
+        self.activity_search_agent: Agent[TripContext] = create_activity_search_agent()
 
     async def run(self, query: TripQuery) -> None:
         """Run the simplified adventure planning workflow"""
@@ -32,8 +35,11 @@ class AdventureManager:
             # 1. Get Weather Information
             weather_info = await self._get_weather_info(trip_context)
 
-            # 2. Generate Trip Plan (includes evaluation and recommendations)
-            trip_plan = await self._generate_trip_plan(weather_info, trip_context)
+            # 2. Search for activities
+            search_results, search_agent_used = await self._search_for_activities(trip_context, weather_info)
+
+            # 3. Generate Trip Plan (includes evaluation and recommendations)
+            trip_plan = await self._generate_trip_plan(search_results, weather_info, trip_context)
 
             # Display the final trip plan
             self._print_trip_plan(trip_plan)
@@ -54,7 +60,7 @@ class AdventureManager:
         return weather_info
 
     async def _generate_trip_plan(
-        self, weather_info: WeatherAnalysis, context: TripContext
+        self, search_results: SearchResult, weather_info: WeatherAnalysis, context: TripContext
     ) -> TripPlan:
         """Run the RecommendationAgent to evaluate activities and create the final plan."""
         print("Evaluating activities and creating trip plan...")
@@ -66,6 +72,7 @@ class AdventureManager:
             f"Create a trip plan for {context.query.location} from {dates_str} "
             f"for {participants_str}.\n\n"
             f"Weather Information:\n{weather_info.model_dump()}\n\n"
+            f"Potential Activities:\n{search_results.model_dump()}"
         )
 
         result = await Runner.run(self.recommendation_agent, input_str, context=context)
@@ -73,6 +80,23 @@ class AdventureManager:
         trip_plan = result.final_output_as(TripPlan)
         print("Trip plan generated.")
         return trip_plan
+    
+    async def _search_for_activities(self, context: TripContext, weather_info: WeatherAnalysis) -> SearchResult:
+        """Search for activities based on weather information and trip details."""
+        print("Searching for activities...")
+
+        input_str = (
+            f"Search for activities for a trip in {context.query.location} from {context.query.start_date} to {context.query.end_date}. "
+            f"for {context.query.participant_number} participants (ages: {context.query.participant_ages}). "
+            f" Consider the weather information: {weather_info.model_dump()}"
+        )
+
+        result = await Runner.run(self.activity_search_agent, input_str, context=context)
+
+        activity_result = result.final_output_as(SearchResult)
+        final_agent = result.last_agent
+        print(f"Activity search complete (using {final_agent.name}).")
+        return activity_result, final_agent
 
     def _print_trip_plan(self, plan: TripPlan) -> None:
         """Print the final trip plan in a structured format."""

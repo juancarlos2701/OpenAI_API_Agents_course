@@ -11,6 +11,7 @@ from .agents import (
     create_activity_search_agent,
     SearchResult,
 )
+from agents.mcp import MCPServerStdio
 
 
 class AdventureManager:
@@ -45,18 +46,33 @@ class AdventureManager:
             self._print_trip_plan(trip_plan)
 
     async def _get_weather_info(self, context: TripContext) -> WeatherAnalysis:
-        """Run the WeatherAgent to get weather information."""
-        print("Fetching weather information...")
+        """Run the WeatherAgent to get weather information, managing MCP server lifecycle."""
+        print("Initializing and connecting to Weather MCP server...")
 
-        input_str = (
-            f"Get weather analysis for a trip to {context.query.location} "
-            f"from {context.query.start_date} to {context.query.end_date}."
+        # Define and connect to the Weather MCP server
+        weather_mcp_server = MCPServerStdio(
+            params={
+                "command": "docker",
+                "args": ["run", "--rm", "-i", "mcp_server_weather"],
+            }
         )
 
-        result = await Runner.run(self.weather_agent, input_str, context=context)
+        async with weather_mcp_server as server:
+            print("Weather MCP server connected. Creating weather agent...")
+            weather_agent = create_weather_agent(mcp_servers=[server])
 
-        weather_info = result.final_output_as(WeatherAnalysis)
-        print("Weather information fetched.")
+            print("Fetching weather information using Weather Agent...")
+            input_str = (
+                f"Get weather analysis for a trip to {context.query.location} "
+                f"from {context.query.start_date} to {context.query.end_date}."
+            )
+
+            result = await Runner.run(weather_agent, input_str, context=context)
+
+            weather_info = result.final_output_as(WeatherAnalysis)
+            print("Weather information fetched.")
+
+        print("Weather MCP server disconnected.")
         return weather_info
 
     async def _generate_trip_plan(

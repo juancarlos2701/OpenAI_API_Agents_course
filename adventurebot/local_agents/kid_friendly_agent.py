@@ -30,4 +30,5 @@ def create_kid_friendly_activity_agent() -> Agent[TripContext]:
         instructions=PROMPT,
         output_type=SearchResult,
         tools=[WebSearchTool()],
+        model="gpt-4.1-mini",
     )

@@ -82,6 +82,8 @@ class AdventureManager:
         return trip_plan
     
     async def _search_for_activities(self, context: TripContext, weather_info: WeatherAnalysis) -> SearchResult:
+
+    async def _search_for_activities(self, context: TripContext, weather_info: WeatherAnalysis) -> tuple[SearchResult, Agent]:
         """Search for activities based on weather information and trip details."""
         print("Searching for activities...")
 

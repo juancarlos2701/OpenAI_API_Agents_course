@@ -1,8 +1,8 @@
 """Agent for performing web searches to find activities and information."""
 
 from agents import Agent, WebSearchTool, handoff
-from ..models import TripContext, CHILD_AGE_THRESHOLD, ActivityResult, SearchResult
-from ..tools.context_tools import check_child_threshold_status
+from models import TripContext, CHILD_AGE_THRESHOLD, ActivityResult, SearchResult
+from tools.context_tools import check_child_threshold_status
 
 PROMPT = f"""You research and find suitable activities for a trip based on provided details.
 

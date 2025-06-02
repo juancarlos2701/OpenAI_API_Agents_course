@@ -1,7 +1,7 @@
 """Agent implementation for finding and evaluating child-friendly activities."""
 
 from agents import Agent, WebSearchTool
-from ..models import TripContext, SearchResult  # Import SearchResult from ..models
+from models import TripContext, SearchResult  # Import SearchResult from ..models
 
 PROMPT = """You are a specialized search agent focused on finding activities suitable for children.
         

@@ -2,8 +2,9 @@
 
 from agents import Runner, trace, gen_trace_id, Agent
 from agents.result import RunResult
-from .models import TripQuery, TripContext
-from .agents import (
+from agents.mcp import MCPServerStdio
+from models import TripQuery, TripContext
+from local_agents import (
     create_weather_agent,
     WeatherAnalysis,
     create_recommendation_agent,
@@ -11,7 +12,6 @@ from .agents import (
     create_activity_search_agent,
     SearchResult,
 )
-from agents.mcp import MCPServerStdio
 
 
 class AdventureManager:

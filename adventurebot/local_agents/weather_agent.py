@@ -5,8 +5,8 @@ from typing import Optional, List, Sequence
 from pydantic import BaseModel
 
 from agents import Agent, WebSearchTool
-from ..models import TripContext
 from agents.mcp import MCPServer
+from models import TripContext
 
 PROMPT = f"""You are a weather analyst that helps travelers prepare for their trip using provided weather tools.
         The current date is {datetime.now().date()}.

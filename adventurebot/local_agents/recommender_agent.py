@@ -4,7 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 from agents import Agent
-from ..models import TripContext
+from models import TripContext
 
 PROMPT = """You evaluate potential activities and create a final travel plan.
         

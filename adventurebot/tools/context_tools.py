@@ -1,7 +1,7 @@
 """Utility tools for managing and processing trip context data."""
 
 from agents import RunContextWrapper, function_tool
-from ..models import TripContext, CHILD_AGE_THRESHOLD
+from models import TripContext, CHILD_AGE_THRESHOLD
 
 
 @function_tool

@@ -1,9 +1,14 @@
 """Entry point for the AdventureBot application. Handles trip planning initialization and execution."""
 
+from dotenv import load_dotenv
+
 import asyncio
 
-from .manager import AdventureManager
-from .models import TripQuery
+from manager import AdventureManager
+from models import TripQuery
+
+
+load_dotenv()
 
 
 async def main() -> None:

@@ -72,7 +72,8 @@ class AdventureManager:
             f"Create a trip plan for {context.query.location} from {dates_str} "
             f"for {participants_str}.\n\n"
             f"Weather Information:\n{weather_info.model_dump()}\n\n"
-            f"Potential Activities:\n{search_results.model_dump()}"
+            f"Potential Activities:\n{search_results.search_summary}\n\n"
+            f"Detailed activity list: {[activity.model_dump() for activity in search_results.activities]}"
         )
 
         result = await Runner.run(self.recommendation_agent, input_str, context=context)
@@ -80,8 +81,6 @@ class AdventureManager:
         trip_plan = result.final_output_as(TripPlan)
         print("Trip plan generated.")
         return trip_plan
-    
-    async def _search_for_activities(self, context: TripContext, weather_info: WeatherAnalysis) -> SearchResult:
 
     async def _search_for_activities(self, context: TripContext, weather_info: WeatherAnalysis) -> tuple[SearchResult, Agent]:
         """Search for activities based on weather information and trip details."""
@@ -97,7 +96,13 @@ class AdventureManager:
 
         activity_result = result.final_output_as(SearchResult)
         final_agent = result.last_agent
-        print(f"Activity search complete (using {final_agent.name}).")
+
+        # Log if a handoff occurred
+        if final_agent.name != self.activity_search_agent.name:
+            print(f"Handoff occurred: Activities found by {final_agent.name}.")
+        else:
+            print(f"Activity search complete (using {final_agent.name}).")
+
         return activity_result, final_agent
 
     def _print_trip_plan(self, plan: TripPlan) -> None:

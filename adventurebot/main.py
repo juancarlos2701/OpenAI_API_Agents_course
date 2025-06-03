@@ -19,10 +19,10 @@ async def main() -> None:
     # Sample trip query data
     query = TripQuery(
         start_date="2025-06-05",
-        end_date="2025-07-14",
-        location="Amsterdam",
-        participant_number=2,
-        participant_ages=[32, 35],
+        end_date="2025-06-14",
+        location="Bogota",
+        participant_number=3,
+        participant_ages=[32, 35, 10],
     )
 
     # Initialize and run the adventure manager

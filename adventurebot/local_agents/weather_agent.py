@@ -49,5 +49,5 @@ def create_weather_agent(mcp_servers: Sequence[MCPServer]) -> Agent[TripContext]
         output_type=WeatherAnalysis,
         tools=[WebSearchTool()],
         mcp_servers=mcp_servers,
-        model="gpt-4.1-mini",
+        model="gpt-4o",
     )

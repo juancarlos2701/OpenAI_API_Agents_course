@@ -58,5 +58,5 @@ def create_recommendation_agent() -> Agent[TripContext]:
         name="Recommendation Agent",
         instructions=PROMPT,
         output_type=TripPlan,
-        model="gpt-4.1-mini",
+        model="gpt-4o",
     )

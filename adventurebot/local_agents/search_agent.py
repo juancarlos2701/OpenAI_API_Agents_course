@@ -41,5 +41,5 @@ def create_activity_search_agent() -> Agent[TripContext]:
         output_type=SearchResult,
         tools=[WebSearchTool(), check_child_threshold_status],
         handoffs=[handoff(kid_friendly_agent)],
-        model="gpt-4.1-mini",
+        model="gpt-4o", 
     )
